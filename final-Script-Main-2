@@ -1,0 +1,353 @@
+"use client";
+
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+const Portfolio = () => {
+  const [activeTab, setActiveTab] = useState('games');
+  const [activeSlide, setActiveSlide] = useState({
+    games: 0,
+    interests: 0
+  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: '',
+    description: '',
+    icon: ''
+  });
+
+  const gamesSlides = [
+    {
+      title: "Minecraft",
+      description: "Building incredible worlds and exploring endless possibilities in this sandbox masterpiece.",
+      icon: "fas fa-cube"
+    },
+    {
+      title: "Roblox",
+      description: "I play roblox since 2019.",
+      icon: "fas fa-robot"
+    },
+    {
+      title: "Mobile Legends",
+      description: "I play it Since 2017.",
+      icon: "fas fa-mobile-alt"
+    },
+    {
+      title: "Call of Duty: Mobile",
+      description: "I play it because I love shooting games since before it release.",
+      icon: "fas fa-crosshairs"
+    }
+  ];
+
+  const interestsSlides = [
+    {
+      title: "Food & Cooking",
+      description: "Because i like to Eat.",
+      icon: "fas fa-utensils"
+    },
+    {
+      title: "Fitness & Exercise",
+      description: "Because i like to be healthy and muscular .",
+      icon: "fas fa-dumbbell"
+    },
+    {
+      title: "Gaming",
+      description: "I like gaming alot because am addicted to it.",
+      icon: "fas fa-gamepad"
+    }
+  ];
+
+  const projects = [
+    {
+      id: 1,
+      title: "What Xander's Favorite Games to play?",
+      description: "Discover the games I enjoy playing in my free time with detailed descriptions.",
+      icon: "fas fa-gamepad"
+    },
+    {
+      id: 2,
+      title: "What Xander likes?",
+      description: "I Like to Eat ,Exercise and Play.",
+      icon: "fas fa-heart"
+    },
+  ];
+
+  const openModal = (projectId: number) => {
+    let content = {
+      title: '',
+      description: '',
+      icon: ''
+    };
+
+    if (projectId === 1) {
+      content = {
+        title: "What Xander's Favorite Games to play?",
+        description: "I like to play games like Minecraft, Roblox, Mobile Legends, and Call of Duty: Mobile. These games offer different experiences - from creative building in Minecraft to competitive battles in ML and CODM.",
+        icon: "fas fa-gamepad"
+      };
+    } else if (projectId === 2) {
+      content = {
+        title: "What Xander likes?",
+        description: "I like to eat delicious food and exercise regularly. Eating good food brings me joy and energy, while exercising keeps me healthy and active. I also enjoy gaming and spending time with friends.",
+        icon: "fas fa-heart"
+      };
+    }
+
+    setModalContent(content);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const nextSlide = (sliderType: string) => {
+    const sliders = {
+      games: gamesSlides,
+      interests: interestsSlides,
+    };
+
+    const maxIndex = sliders[sliderType as keyof typeof sliders].length - 1;
+    setActiveSlide(prev => ({
+      ...prev,
+      [sliderType]: prev[sliderType as keyof typeof prev] < maxIndex 
+        ? prev[sliderType as keyof typeof prev] + 1 
+        : 0
+    }));
+  };
+
+  const prevSlide = (sliderType: string) => {
+    const sliders = {
+      games: gamesSlides,
+      interests: interestsSlides,
+    };
+
+    const maxIndex = sliders[sliderType as keyof typeof sliders].length - 1;
+    setActiveSlide(prev => ({
+      ...prev,
+      [sliderType]: prev[sliderType as keyof typeof prev] > 0 
+        ? prev[sliderType as keyof typeof prev] - 1 
+        : maxIndex
+    }));
+  };
+
+  const goToSlide = (sliderType: string, index: number) => {
+    setActiveSlide(prev => ({
+      ...prev,
+      [sliderType]: index
+    }));
+  };
+
+  const getActiveSlides = () => {
+    switch(activeTab) {
+      case 'games': return gamesSlides;
+      case 'interests': return interestsSlides;
+      default: return gamesSlides;
+    }
+  };
+
+  const getActiveSlideIndex = () => {
+    switch(activeTab) {
+      case 'games': return activeSlide.games;
+      case 'interests': return activeSlide.interests;
+      default: return 0;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center py-8 md:py-12">
+          <motion.h1 
+            className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 mb-3"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Xander Llaban Portfolio
+          </motion.h1>
+          <motion.p 
+            className="text-gray-400 max-w-2xl mx-auto text-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            you can view my portfolio and projects here.
+          </motion.p>
+        </header>
+
+        <motion.div 
+          className="flex flex-wrap justify-center gap-3 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          {['games', 'interests'].map((tab) => (
+            <button
+              key={tab}
+              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                activeTab === tab
+                  ? 'bg-gradient-to-r from-purple-600 to-cyan-500 shadow-lg shadow-purple-500/30'
+                  : 'bg-gray-800 hover:bg-gray-700'
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </motion.div>
+
+        <motion.div 
+          className="bg-gray-800/30 backdrop-blur-lg rounded-2xl p-6 mb-12 border border-gray-700/50 shadow-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">
+              {activeTab === 'games' && 'My Favorite Games'}
+              {activeTab === 'interests' && 'My Interests'}
+            </h2>
+            <div className="flex gap-2">
+              <button 
+                className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center transition-colors"
+                onClick={() => prevSlide(activeTab)}
+              >
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              <button 
+                className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center transition-colors"
+                onClick={() => nextSlide(activeTab)}
+              >
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div className="relative h-96 overflow-hidden rounded-xl">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out h-full"
+              style={{ transform: `translateX(-${getActiveSlideIndex() * 100}%)` }}
+            >
+              {getActiveSlides().map((slide, index) => (
+                <div 
+                  key={index} 
+                  className="min-w-full h-full flex flex-col md:flex-row p-6"
+                >
+                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 w-full md:w-1/2 h-full flex flex-col items-center justify-center border border-gray-700/50">
+                    <div className="text-5xl text-cyan-400 mb-6">
+                      <i className={slide.icon}></i>
+                    </div>
+                    <h3 className="text-2xl font-bold mb-4">{slide.title}</h3>
+                    <p className="text-gray-300 text-center max-w-lg">{slide.description}</p>
+                  </div>
+                  <div className="w-full md:w-1/2 h-full flex items-center justify-center p-6">
+                    <div className="w-full h-full flex items-center justify-center bg-gray-800/50 rounded-xl border-2 border-dashed border-gray-700">
+                      <div className="text-center p-4">
+                        <div className="text-5xl text-gray-600 mb-4">
+                          <i className={slide.icon}></i>
+                        </div>
+                        <p className="text-gray-500">No image available</p>
+                        <p className="text-gray-600 text-sm mt-2">Placeholder for {slide.title}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-2 mt-6">
+            {getActiveSlides().map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  getActiveSlideIndex() === index 
+                    ? 'bg-cyan-400 w-6' 
+                    : 'bg-gray-600 hover:bg-gray-500'
+                }`}
+                onClick={() => goToSlide(activeTab, index)}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          {projects.map((project) => (
+            <div 
+              key={project.id}
+              className="bg-gray-800/30 backdrop-blur-lg rounded-2xl overflow-hidden border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300 hover:-translate-y-2 shadow-lg"
+            >
+              <div className="bg-gradient-to-r from-purple-600/20 to-cyan-500/20 h-40 flex items-center justify-center">
+                <i className={`${project.icon} text-6xl text-gray-600/20`}></i>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-3">{project.title}</h3>
+                <p className="text-gray-400 mb-5">{project.description}</p>
+                <button
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-lg font-medium hover:from-purple-700 hover:to-cyan-600 transition-all"
+                  onClick={() => openModal(project.id)}
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        <footer className="text-center py-8 text-gray-500 border-t border-gray-800">
+          <p>Created by <span className="text-cyan-400">Xander LLaban</span>. All rights reserved &copy; 2025.</p>
+        </footer>
+      </div>
+
+      {/* Modal */}
+      {modalOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 z-50"
+          onClick={closeModal}
+        >
+          <motion.div 
+            className="bg-gray-800 rounded-2xl w-full max-w-2xl border border-gray-700 overflow-hidden"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold">{modalContent.title}</h2>
+                <button 
+                  className="text-gray-400 hover:text-white text-2xl"
+                  onClick={closeModal}
+                >
+                  &times;
+                </button>
+              </div>
+              
+              <div className="bg-gradient-to-r from-purple-600/20 to-cyan-500/20 rounded-xl h-48 flex items-center justify-center mb-6">
+                <i className={`${modalContent.icon} text-7xl text-gray-600/20`}></i>
+              </div>
+              
+              <p className="text-gray-300 leading-relaxed">{modalContent.description}</p>
+            </div>
+            
+            <div className="bg-gray-900/50 px-6 py-4 flex justify-end">
+              <button
+                className="px-5 py-2 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-lg font-medium hover:from-purple-700 hover:to-cyan-600 transition-all"
+                onClick={closeModal}
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Portfolio;
